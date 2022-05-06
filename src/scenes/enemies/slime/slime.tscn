@@ -1,0 +1,68 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://assets/enemies/slime/snailShell.png" type="Texture" id=1]
+[ext_resource path="res://assets/enemies/slime/walk/slimeWalk1.png" type="Texture" id=2]
+[ext_resource path="res://assets/enemies/slime/walk/slimeWalk2.png" type="Texture" id=3]
+[ext_resource path="res://src/scenes/enemies/slime/slime.gd" type="Script" id=4]
+[ext_resource path="res://assets/enemies/slime/die/slimeDead.png" type="Texture" id=5]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "idle",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "walk",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "die",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 17.25, 10.5 )
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 183.025
+
+[sub_resource type="CircleShape2D" id=4]
+radius = 17.2627
+
+[node name="slime" type="KinematicBody2D"]
+scale = Vector2( 2, 2 )
+collision_layer = 2
+collision_mask = 9
+script = ExtResource( 4 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+animation = "die"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( -3, 3 )
+shape = SubResource( 2 )
+
+[node name="PlayerDetector" type="Area2D" parent="."]
+modulate = Color( 0.890196, 1, 0.878431, 1 )
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetector"]
+modulate = Color( 1, 1, 1, 0.262745 )
+shape = SubResource( 3 )
+
+[node name="ContactDetector" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ContactDetector"]
+modulate = Color( 0.12549, 1, 0, 1 )
+position = Vector2( -4, 2.5 )
+shape = SubResource( 4 )
+
+[connection signal="body_entered" from="PlayerDetector" to="." method="_on_PlayerDetector_body_entered"]
+[connection signal="body_exited" from="PlayerDetector" to="." method="_on_PlayerDetector_body_exited"]
+[connection signal="body_entered" from="ContactDetector" to="." method="_on_ContactDetector_body_entered"]
