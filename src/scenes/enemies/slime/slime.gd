@@ -4,6 +4,7 @@ var floating_numbers = preload("res://src/scenes/hud/numbers_label/numbered_labe
 
 var is_near_player = false
 var health = 1000
+var hit_speed := Vector2(100.0, 50.0)
 
 func _ready() -> void:
 	pass
@@ -18,11 +19,21 @@ func _on_PlayerDetector_body_entered(body: KinematicBody2D) -> void:
 
 func _on_ContactDetector_body_entered(body: KinematicBody2D) -> void:
 	var damage = 100
+	onHit(damage)
+
+
+func onHit(damage : float) -> void:
+	print('got hit')
 	health -= damage
 	var text = floating_numbers.instance()
 	text.amount = damage
 	add_child(text)
+	
 
+func onPush(origin : Vector2) -> void:
+	print('getiing pushed')
+	_velocity = (global_position - origin).normalized() * hit_speed
+	move_and_slide(_velocity)
 
 func _physics_process(delta: float) -> void:
 	if health <= 0:
